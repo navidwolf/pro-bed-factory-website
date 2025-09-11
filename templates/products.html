@@ -1,18 +1,10 @@
 {% extends "base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
 {% block content %}
-<h1>محصولات ما</h1>
-<div class="row">
-  <div class="col-md-4">
-    <img src="https://via.placeholder.com/300" class="img-fluid rounded" alt="محصول ۱">
-    <h5 class="mt-2">محصول ۱</h5>
-  </div>
-  <div class="col-md-4">
-    <img src="https://via.placeholder.com/300" class="img-fluid rounded" alt="محصول ۲">
-    <h5 class="mt-2">محصول ۲</h5>
-  </div>
-  <div class="col-md-4">
-    <img src="https://via.placeholder.com/300" class="img-fluid rounded" alt="محصول ۳">
-    <h5 class="mt-2">محصول ۳</h5>
-  </div>
-</div>
+<h2>{{ product.name }}</h2>
+<img src="{{ url_for('static', filename='images/products/' + product.image) }}" alt="{{ product.name }}">
+<p>{{ product.description }}</p>
+<a href="{{ url_for('gallery') }}">بازگشت به گالری</a>
 {% endblock %}

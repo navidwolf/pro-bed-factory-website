@@ -2,23 +2,39 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route("/")
+# صفحه اصلی
+@app.route('/')
 def home():
-    return render_template("index.html", title="صفحه اصلی", description="صفحه اصلی کارخانه")
+    return render_template('index.html')
 
-@app.route("/about")
+# درباره ما
+@app.route('/about')
 def about():
-    return render_template("about.html", title="درباره ما", description="درباره کارخانه و معرفی برند")
+    return render_template('about.html')
 
-@app.route("/products")
-def products():
-    return render_template("products.html", title="محصولات", description="محصولات کارخانه")
+# گالری محصولات
+@app.route('/gallery')
+def gallery():
+    # یک لیست ساده از محصولات (می‌توان بعداً JSON یا دیتابیس استفاده کرد)
+    products = [
+        {'id': 1, 'name': 'تخت چوبی مدل A', 'image': 'bed1.jpg'},
+        {'id': 2, 'name': 'تخت فلزی مدل B', 'image': 'bed2.jpg'},
+        {'id': 3, 'name': 'تخت طبی مدل C', 'image': 'bed3.jpg'}
+        # اضافه کردن محصولات دیگر
+    ]
+    return render_template('gallery.html', products=products)
 
-@app.route("/contact")
-def contact():
-    return render_template("contact.html", title="تماس با ما", description="ارتباط با کارخانه")
+# صفحه جزئیات محصول
+@app.route('/product/<int:product_id>')
+def product(product_id):
+    # برای مثال ساده، اطلاعات محصول
+    product_details = {
+        1: {'name': 'تخت چوبی مدل A', 'description': 'توضیح کوتاه', 'image': 'bed1.jpg'},
+        2: {'name': 'تخت فلزی مدل B', 'description': 'توضیح کوتاه', 'image': 'bed2.jpg'},
+        3: {'name': 'تخت طبی مدل C', 'description': 'تخت طبی مناسب برای استراحت راحت.', 'image': 'bed3.jpg'}
+    }
+    product = product_details.get(product_id)
+    return render_template('product.html', product=product)
 
-if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
