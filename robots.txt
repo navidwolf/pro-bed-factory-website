@@ -1,0 +1,11 @@
+# robots.txt for Bed Factory Website
+
+User-agent: *
+Allow: /
+
+# مسیرهای غیرضروری برای ایندکس
+Disallow: /static/
+Disallow: /__pycache__/
+
+# آدرس نقشه سایت
+Sitemap: https://www.yourdomain.com/sitemap.xml

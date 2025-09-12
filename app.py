@@ -1,40 +1,64 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, Response
+from datetime import datetime
+
 
 app = Flask(__name__)
 
-# صفحه اصلی
+
+# Basic site data — customize
+SITE_META = {
+'site_name': 'Bed Factory Co.',
+'description': 'تولید کنندهٔ تخت‌خواب‌های با کیفیت — طراحی و ساخت در ایران.',
+'phone': '+98-21-12345678',
+'address': 'تهران، خیابان نمونه، نبش کارخانه',
+'email': 'info@bedfactory.example'
+}
+
+
 @app.route('/')
-def home():
-    return render_template('index.html')
+def index():
+products = [
+{ 'id': 1, 'title': 'تخت خواب مدل آریا', 'image': url_for('static', filename='images/product1.webp'), 'excerpt': 'کلاف چوبی، راحتی بالا' },
+{ 'id': 2, 'title': 'تخت خواب مدل نیلا', 'image': url_for('static', filename='images/product2.webp'), 'excerpt': 'مدرن و شیک' },
+]
+return render_template('index.html', meta=SITE_META, products=products)
 
-# درباره ما
-@app.route('/about')
-def about():
-    return render_template('about.html')
 
-# گالری محصولات
-@app.route('/gallery')
-def gallery():
-    # یک لیست ساده از محصولات (می‌توان بعداً JSON یا دیتابیس استفاده کرد)
-    products = [
-        {'id': 1, 'name': 'تخت چوبی مدل A', 'image': 'bed1.jpg'},
-        {'id': 2, 'name': 'تخت فلزی مدل B', 'image': 'bed2.jpg'},
-        {'id': 3, 'name': 'تخت طبی مدل C', 'image': 'bed3.jpg'}
-        # اضافه کردن محصولات دیگر
-    ]
-    return render_template('gallery.html', products=products)
+@app.route('/products')
+def products():
+products = [
+{ 'id': 1, 'title': 'تخت خواب مدل آریا', 'image': url_for('static', filename='images/product1.webp'), 'desc': 'کلاف چوبی استاندارد، ابعاد مختلف' },
+{ 'id': 2, 'title': 'تخت خواب مدل نیلا', 'image': url_for('static', filename='images/product2.webp'), 'desc': 'مناسب فضاهای مدرن، قابل سفارش' },
+]
+return render_template('products.html', meta=SITE_META, products=products)
 
-# صفحه جزئیات محصول
-@app.route('/product/<int:product_id>')
-def product(product_id):
-    # برای مثال ساده، اطلاعات محصول
-    product_details = {
-        1: {'name': 'تخت چوبی مدل A', 'description': 'توضیح کوتاه', 'image': 'bed1.jpg'},
-        2: {'name': 'تخت فلزی مدل B', 'description': 'توضیح کوتاه', 'image': 'bed2.jpg'},
-        3: {'name': 'تخت طبی مدل C', 'description': 'تخت طبی مناسب برای استراحت راحت.', 'image': 'bed3.jpg'}
-    }
-    product = product_details.get(product_id)
-    return render_template('product.html', product=product)
+
+@app.route('/contact')
+def contact():
+return render_template('contact.html', meta=SITE_META)
+
+
+@app.route('/sitemap.xml')
+def sitemap():
+# Simple dynamic sitemap
+pages = []
+ten_days_ago = (datetime.now()).date().isoformat()
+pages.append({'loc': url_for('index', _external=True), 'lastmod': ten_days_ago})
+pages.append({'loc': url_for('products', _external=True), 'lastmod': ten_days_ago})
+pages.append({'loc': url_for('contact', _external=True), 'lastmod': ten_days_ago})
+
+
+xml = ['<?xml version="1.0" encoding="UTF-8"?>',
+'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+for p in pages:
+xml.append('<url>')
+xml.append(f"<loc>{p['loc']}</loc>")
+xml.append(f"<lastmod>{p['lastmod']}</lastmod>")
+xml.append('</url>')
+xml.append('</urlset>')
+response = Response('\n'.join(xml), mimetype='application/xml')
+return response
+
 
 if __name__ == '__main__':
-    app.run(debug=True)
+app.run(debug=True)

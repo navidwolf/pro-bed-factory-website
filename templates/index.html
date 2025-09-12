@@ -1,19 +1,60 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}صفحهٔ اصلی — {{ meta.site_name }}{% endblock %}
 
-{% block title %}صفحه اصلی{% endblock %}
+
+{% block head_extra %}
+<meta name="keywords" content="تخت خواب, تولید تخت, کارخانه تخت خواب, مبلمان خواب">
+<script type="application/ld+json">
+{
+"@context": "https://schema.org",
+"@type": "LocalBusiness",
+"name": "{{ meta.site_name }}",
+"image": "{{ url_for('static', filename='meta/site-thumbnail.webp') }}",
+"@id": "",
+"url": "{{ url_for('index', _external=True) }}",
+"telephone": "{{ meta.phone }}",
+"address": {
+"@type": "PostalAddress",
+"streetAddress": "{{ meta.address }}",
+"addressCountry": "IR"
+}
+}
+</script>
+{% endblock %}
+
 
 {% block content %}
-<!-- Hero Section با پارالکس -->
-<div class="hero">
-    <div class="hero-overlay">
-        <h1>به کارخانه تخت‌خواب خوش آمدید</h1>
-        <p>تولیدکننده انواع تخت‌خواب‌های با کیفیت و مدرن</p>
-    </div>
+<section class="relative bg-white">
+<div class="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-2 gap-8 items-center">
+<div>
+<h2 class="text-3xl font-bold mb-4">تولید تخت‌خواب با کیفیت — راحتی و دوام</h2>
+<p class="text-slate-600 mb-6">ما در کارخانهٔ {{ meta.site_name }} با بهره‌گیری از مواد اولیهٔ استاندارد و تیم مجرب، تخت‌هایی تولید می‌کنیم که هم زیبا و هم بادوام باشند.</p>
+<a href="{{ url_for('products') }}" class="inline-block bg-sky-600 text-white px-4 py-2 rounded-md">مشاهده محصولات</a>
 </div>
-
-<!-- بخش معرفی کوتاه -->
-<section class="intro">
-    <h2>محصولات ما</h2>
-    <p>تخت‌های چوبی، فلزی و طبی با طراحی مدرن و کیفیت عالی تولید می‌کنیم.</p>
+<div>
+<img src="{{ url_for('static', filename='images/hero.webp') }}" alt="کارخانه تخت خواب" loading="lazy" class="rounded-lg shadow-md object-cover w-full h-72">
+</div>
+</div>
 </section>
+
+
+<section class="max-w-6xl mx-auto px-4 py-12">
+<h3 class="text-2xl font-semibold mb-6">برخی از محصولات ما</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+{% for p in products %}
+<article class="bg-white rounded-lg shadow-sm overflow-hidden">
+<img src="{{ p.image }}" alt="{{ p.title }}" loading="lazy" class="w-full h-48 object-cover">
+<div class="p-4">
+<h4 class="font-semibold">{{ p.title }}</h4>
+<p class="text-sm text-slate-600 clamp-2">{{ p.excerpt }}</p>
+<div class="mt-3">
+<a href="{{ url_for('products') }}#p{{ p.id }}" class="text-sky-600 text-sm">مشاهده جزئیات →</a>
+</div>
+</div>
+</article>
+{% endfor %}
+</div>
+</section>
+
+
 {% endblock %}
