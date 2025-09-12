@@ -26,9 +26,24 @@ def products():
     products = [
         { 'id': 1, 'title': 'تخت خواب مدل آریا', 'image': url_for('static', filename='images/product1.webp'), 'desc': 'کلاف چوبی استاندارد، ابعاد مختلف' },
         { 'id': 2, 'title': 'تخت خواب مدل نیلا', 'image': url_for('static', filename='images/product2.webp'), 'desc': 'مناسب فضاهای مدرن، قابل سفارش' },
-        # می‌توانید محصولات بیشتری هم اضافه کنید
     ]
     return render_template('products.html', meta=SITE_META, products=products)
+
+# ✅ Route جدید برای جزئیات محصول
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    products = [
+        { 'id': 1, 'title': 'تخت خواب مدل آریا', 'image': url_for('static', filename='images/product1.webp'), 
+          'desc': 'کلاف چوبی استاندارد، ابعاد مختلف', 
+          'details': 'تخت خواب مدل آریا با چوب مقاوم ساخته شده و طراحی ارگونومیک دارد. مناسب افرادی که به دنبال راحتی و استحکام هستند.' },
+        { 'id': 2, 'title': 'تخت خواب مدل نیلا', 'image': url_for('static', filename='images/product2.webp'), 
+          'desc': 'مناسب فضاهای مدرن، قابل سفارش', 
+          'details': 'تخت خواب مدل نیلا با طراحی مدرن و کم‌جا، مناسب آپارتمان‌ها و اتاق‌های کوچک است. دارای قابلیت سفارش ابعاد و رنگ.' },
+    ]
+    product = next((p for p in products if p['id'] == product_id), None)
+    if not product:
+        return "محصول یافت نشد", 404
+    return render_template('product_detail.html', meta=SITE_META, product=product)
 
 @app.route('/contact')
 def contact():
@@ -36,7 +51,6 @@ def contact():
 
 @app.route('/sitemap.xml')
 def sitemap():
-    # Simple dynamic sitemap
     pages = []
     ten_days_ago = (datetime.now()).date().isoformat()
     pages.append({'loc': url_for('index', _external=True), 'lastmod': ten_days_ago})
