@@ -26,6 +26,7 @@ def products():
     products = [
         { 'id': 1, 'title': 'تخت خواب مدل آریا', 'image': url_for('static', filename='images/product1.webp'), 'desc': 'کلاف چوبی استاندارد، ابعاد مختلف' },
         { 'id': 2, 'title': 'تخت خواب مدل نیلا', 'image': url_for('static', filename='images/product2.webp'), 'desc': 'مناسب فضاهای مدرن، قابل سفارش' },
+        # می‌توانید محصولات بیشتری هم اضافه کنید
     ]
     return render_template('products.html', meta=SITE_META, products=products)
 
