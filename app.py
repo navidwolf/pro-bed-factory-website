@@ -22,7 +22,7 @@ def index():
     return render_template('index.html', meta=SITE_META, products=products)
 
 @app.route('/products')
-def products_page():
+def products():
     products = [
         { 'id': 1, 'title': 'تخت خواب مدل آریا', 'image': url_for('static', filename='images/product1.webp'), 'desc': 'کلاف چوبی استاندارد، ابعاد مختلف' },
         { 'id': 2, 'title': 'تخت خواب مدل نیلا', 'image': url_for('static', filename='images/product2.webp'), 'desc': 'مناسب فضاهای مدرن، قابل سفارش' },
@@ -39,7 +39,7 @@ def sitemap():
     pages = []
     ten_days_ago = (datetime.now()).date().isoformat()
     pages.append({'loc': url_for('index', _external=True), 'lastmod': ten_days_ago})
-    pages.append({'loc': url_for('products_page', _external=True), 'lastmod': ten_days_ago})
+    pages.append({'loc': url_for('products', _external=True), 'lastmod': ten_days_ago})
     pages.append({'loc': url_for('contact', _external=True), 'lastmod': ten_days_ago})
 
     xml = ['<?xml version="1.0" encoding="UTF-8"?>',
