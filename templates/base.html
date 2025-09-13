@@ -14,8 +14,8 @@
   <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
     <a href="{{ url_for('index') }}" class="flex items-center gap-3">
       <img src="{{ url_for('static', filename='meta/site-thumbnail.webp') }}" alt="لوگو"
-           class="w-12 h-12 rounded-md object-contain">
-      <div>
+           class="w-12 h-12 object-contain rounded-md">
+      <div class="flex flex-col justify-center">
         <h1 class="text-lg font-bold">{{ meta.site_name }}</h1>
         <p class="text-xs text-slate-500">تولیدکنندهٔ تخت‌خواب با کیفیت</p>
       </div>
