@@ -1,12 +1,11 @@
 from flask import Flask, render_template, url_for, Response, request, redirect, flash
 from datetime import datetime
-import sqlite3, os, json
+import os, sqlite3, json
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"  # لازم برای flash messages
 
-DB_NAME = "products.db"
-
+# ---------- تنظیمات سایت ----------
 SITE_META = {
     'site_name': 'Bed Factory Co.',
     'description': 'تولید کنندهٔ تخت‌خواب‌های با کیفیت — طراحی و ساخت در ایران.',
@@ -15,46 +14,62 @@ SITE_META = {
     'email': 'info@bedfactory.example'
 }
 
-# --- Helper: اتصال به دیتابیس ---
+DB_FILE = "products.db"
+
+# ---------- تابع ساخت دیتابیس خودکار ----------
+def init_db():
+    """اگر دیتابیس وجود نداشت، ایجادش کن و داده‌ها رو وارد کن."""
+    if not os.path.exists(DB_FILE):
+        conn = sqlite3.connect(DB_FILE)
+        c = conn.cursor()
+        c.execute("""
+        CREATE TABLE products (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            image TEXT NOT NULL,
+            excerpt TEXT,
+            desc TEXT,
+            details TEXT
+        )
+        """)
+        c.execute("""
+        CREATE TABLE messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            message TEXT NOT NULL,
+            created_at TEXT NOT NULL
+        )
+        """)
+        conn.commit()
+
+        # بارگذاری داده‌های اولیه از products.json
+        if os.path.exists("products.json"):
+            with open("products.json", "r", encoding="utf-8") as f:
+                products = json.load(f)
+            for p in products:
+                c.execute("INSERT INTO products (title, image, excerpt, desc, details) VALUES (?, ?, ?, ?, ?)",
+                          (p["title"], p["image"], p.get("excerpt",""), p.get("desc", ""), p.get("details", "")))
+            conn.commit()
+
+        conn.close()
+
+# اجرای خودکار ساخت دیتابیس
+init_db()
+
+# ---------- helper اتصال به دیتابیس ----------
 def get_db():
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_FILE)
     conn.row_factory = sqlite3.Row
     return conn
 
-# --- بارگذاری محصولات نمونه از JSON ---
-def init_db():
-    if not os.path.exists(DB_NAME):
-        conn = get_db()
-        c = conn.cursor()
-        c.execute('''CREATE TABLE products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT, image TEXT, excerpt TEXT,
-            desc TEXT, details TEXT
-        )''')
-        c.execute('''CREATE TABLE messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT, email TEXT, message TEXT, created_at TEXT
-        )''')
-        conn.commit()
-
-        # بارگذاری داده‌ها از JSON
-        with open("products.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-            for p in data:
-                c.execute("INSERT INTO products (title,image,excerpt,desc,details) VALUES (?,?,?,?,?)",
-                          (p['title'], p['image'], p['excerpt'], p['desc'], p['details']))
-        conn.commit()
-        conn.close()
-
-init_db()
-
-# --- Middleware ساده برای CSP ---
+# ---------- Middleware امنیت ----------
 @app.after_request
 def add_security_headers(resp):
     resp.headers['Content-Security-Policy'] = "default-src 'self' data: https://cdn.tailwindcss.com;"
     return resp
 
-# --- Routes ---
+# ---------- Routes ----------
 @app.route('/')
 def index():
     conn = get_db()
@@ -129,6 +144,7 @@ def sitemap():
     xml.append('</urlset>')
     return Response('\n'.join(xml), mimetype='application/xml')
 
+# ---------- Run App ----------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
