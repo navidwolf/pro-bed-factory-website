@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کارخانه رختخواب</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>کارخانه رختخواب</h1>
+        <nav>
+            <a href="/">خانه</a>
+            <a href="/about">درباره ما</a>
+            <a href="/contact">تماس با ما</a>
+        </nav>
+    </header>
+
+    <main>
+        <h2>محصولات ما</h2>
+        <div class="products">
+            {% for product in products %}
+            <div class="product">
+                <img src="{{ url_for('static', filename='images/' ~ product.image) }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2025 کارخانه رختخواب. همه حقوق محفوظ است.</p>
+    </footer>
+</body>
+</html>
