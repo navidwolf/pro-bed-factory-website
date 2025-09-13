@@ -1,19 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6 text-center">محصولات ما</h1>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {% for product in products %}
-        <div class="border rounded-lg shadow hover:shadow-lg transition duration-300">
-            <img src="{{ product.image }}" alt="{{ product.title }}" class="w-full h-48 object-cover rounded-t-lg">
-            <div class="p-4">
-                <h2 class="text-xl font-semibold mb-2">{{ product.title }}</h2>
-                <p class="text-gray-600">{{ product.desc or product.excerpt }}</p>
-            </div>
-        </div>
-        {% endfor %}
+<h1 class="text-3xl font-bold mb-6 text-center">محصولات ما</h1>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    {% for product in products %}
+    <div class="border rounded-lg shadow hover:shadow-lg transition duration-300 flex flex-col items-center p-4">
+        <img src="{{ product.image }}" alt="{{ product.title }}"
+             class="w-full max-h-48 object-contain rounded mb-2" loading="lazy">
+        <h2 class="text-xl font-semibold text-center">{{ product.title }}</h2>
+        <p class="text-center text-gray-600">{{ product.desc or product.excerpt }}</p>
     </div>
+    {% endfor %}
 </div>
 {% endblock %}

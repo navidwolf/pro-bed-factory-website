@@ -1,47 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-12">
-    <div class="flex flex-col md:flex-row items-center gap-8">
-        <!-- تصویر محصول -->
-        <div class="md:w-1/2">
-            <div class="overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-                <img src="{{ product.image }}" alt="{{ product.title }}" class="w-full h-auto object-cover">
-            </div>
-        </div>
-
-        <!-- جزئیات محصول -->
-        <div class="md:w-1/2">
-            <h1 class="text-4xl font-bold mb-4 text-gray-800">{{ product.title }}</h1>
-            <p class="text-gray-600 mb-4 text-lg">{{ product.desc }}</p>
-            
-            <h2 class="text-2xl font-semibold mb-2 text-gray-700">توضیحات کامل:</h2>
-            <p class="text-gray-600 mb-6 leading-relaxed">{{ product.details }}</p>
-
-            <a href="{{ url_for('products') }}" 
-               class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition duration-300">
-                بازگشت به محصولات
-            </a>
-        </div>
+<div class="flex flex-col md:flex-row gap-8">
+    <!-- تصویر محصول -->
+    <div class="md:w-1/2 flex justify-center">
+        <img src="{{ product.image }}" alt="{{ product.title }}"
+             class="w-full max-h-80 object-contain rounded-lg shadow-lg" loading="lazy">
     </div>
 
-    <!-- بخش پیشنهادی برای محصولات مرتبط -->
-    <div class="mt-12">
-        <h3 class="text-2xl font-bold mb-6 text-gray-800">محصولات دیگر</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {% for p in products %}
-                {% if p.id != product.id %}
-                <div class="border rounded-lg shadow hover:shadow-lg transition duration-300 p-4">
-                    <img src="{{ p.image }}" alt="{{ p.title }}" class="w-full h-48 object-cover rounded-t-lg mb-2">
-                    <h4 class="text-lg font-semibold mb-1">{{ p.title }}</h4>
-                    <p class="text-gray-600">{{ p.desc }}</p>
-                    <a href="{{ url_for('product_detail', product_id=p.id) }}" class="text-blue-600 hover:underline mt-2 inline-block">
-                        مشاهده جزئیات
-                    </a>
-                </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+    <!-- جزئیات محصول -->
+    <div class="md:w-1/2 flex flex-col justify-center">
+        <h1 class="text-4xl font-bold mb-4 text-gray-800">{{ product.title }}</h1>
+        <p class="text-gray-600 mb-4 text-lg">{{ product.desc }}</p>
+        <h2 class="text-2xl font-semibold mb-2 text-gray-700">توضیحات کامل:</h2>
+        <p class="text-gray-600 mb-6 leading-relaxed">{{ product.details }}</p>
+        <a href="{{ url_for('products') }}" 
+           class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition duration-300">
+            بازگشت به محصولات
+        </a>
+    </div>
+</div>
+
+<!-- محصولات مرتبط -->
+<div class="mt-12">
+    <h3 class="text-2xl font-bold mb-6 text-gray-800">محصولات دیگر</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {% for p in products %}
+            {% if p.id != product.id %}
+            <div class="border rounded-lg shadow hover:shadow-lg transition duration-300 flex flex-col items-center p-4">
+                <img src="{{ p.image }}" alt="{{ p.title }}"
+                     class="w-full max-h-48 object-contain rounded mb-2" loading="lazy">
+                <h4 class="text-lg font-semibold mb-1 text-center">{{ p.title }}</h4>
+                <p class="text-gray-600 text-center">{{ p.desc }}</p>
+                <a href="{{ url_for('product_detail', product_id=p.id) }}"
+                   class="text-blue-600 hover:underline mt-2 inline-block">مشاهده جزئیات</a>
+            </div>
+            {% endif %}
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
