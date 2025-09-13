@@ -3,7 +3,7 @@ from datetime import datetime
 import os, sqlite3, json
 
 app = Flask(__name__)
-app.secret_key = "supersecretkey"  # لازم برای flash messages
+app.secret_key = "supersecretkey"
 
 # ---------- تنظیمات سایت ----------
 SITE_META = {
@@ -16,9 +16,8 @@ SITE_META = {
 
 DB_FILE = "products.db"
 
-# ---------- تابع ساخت دیتابیس خودکار ----------
+# ---------- ساخت خودکار دیتابیس ----------
 def init_db():
-    """اگر دیتابیس وجود نداشت، ایجادش کن و داده‌ها رو وارد کن."""
     if not os.path.exists(DB_FILE):
         conn = sqlite3.connect(DB_FILE)
         c = conn.cursor()
@@ -43,27 +42,24 @@ def init_db():
         """)
         conn.commit()
 
-        # بارگذاری داده‌های اولیه از products.json
         if os.path.exists("products.json"):
             with open("products.json", "r", encoding="utf-8") as f:
                 products = json.load(f)
             for p in products:
-                c.execute("INSERT INTO products (title, image, excerpt, desc, details) VALUES (?, ?, ?, ?, ?)",
-                          (p["title"], p["image"], p.get("excerpt",""), p.get("desc", ""), p.get("details", "")))
+                c.execute("INSERT INTO products (title, image, excerpt, desc, details) VALUES (?,?,?,?,?)",
+                          (p["title"], p["image"], p.get("excerpt",""), p.get("desc",""), p.get("details","")))
             conn.commit()
-
         conn.close()
 
-# اجرای خودکار ساخت دیتابیس
 init_db()
 
-# ---------- helper اتصال به دیتابیس ----------
+# ---------- اتصال دیتابیس ----------
 def get_db():
     conn = sqlite3.connect(DB_FILE)
     conn.row_factory = sqlite3.Row
     return conn
 
-# ---------- Middleware امنیت ----------
+# ---------- امنیت ----------
 @app.after_request
 def add_security_headers(resp):
     resp.headers['Content-Security-Policy'] = "default-src 'self' data: https://cdn.tailwindcss.com;"
@@ -125,12 +121,12 @@ def sitemap():
     conn = get_db()
     product_ids = [row['id'] for row in conn.execute("SELECT id FROM products").fetchall()]
     conn.close()
-
-    pages = []
-    today = (datetime.now()).date().isoformat()
-    pages.append({'loc': url_for('index', _external=True), 'lastmod': today})
-    pages.append({'loc': url_for('products', _external=True), 'lastmod': today})
-    pages.append({'loc': url_for('contact', _external=True), 'lastmod': today})
+    today = datetime.now().date().isoformat()
+    pages = [
+        {'loc': url_for('index', _external=True), 'lastmod': today},
+        {'loc': url_for('products', _external=True), 'lastmod': today},
+        {'loc': url_for('contact', _external=True), 'lastmod': today}
+    ]
     for pid in product_ids:
         pages.append({'loc': url_for('product_detail', product_id=pid, _external=True), 'lastmod': today})
 
@@ -144,7 +140,7 @@ def sitemap():
     xml.append('</urlset>')
     return Response('\n'.join(xml), mimetype='application/xml')
 
-# ---------- Run App ----------
+# ---------- اجرا ----------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
