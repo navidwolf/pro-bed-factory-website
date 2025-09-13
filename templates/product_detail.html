@@ -2,13 +2,11 @@
 
 {% block content %}
 <div class="flex flex-col md:flex-row gap-8">
-    <!-- تصویر محصول -->
     <div class="md:w-1/2 flex justify-center">
         <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.title }}"
              class="w-full max-h-80 object-contain rounded-lg shadow-lg" loading="lazy">
     </div>
 
-    <!-- جزئیات محصول -->
     <div class="md:w-1/2 flex flex-col justify-center">
         <h1 class="text-4xl font-bold mb-4 text-gray-800">{{ product.title }}</h1>
         <p class="text-gray-600 mb-4 text-lg">{{ product.desc }}</p>
@@ -21,7 +19,6 @@
     </div>
 </div>
 
-<!-- محصولات مرتبط -->
 <div class="mt-12">
     <h3 class="text-2xl font-bold mb-6 text-gray-800">محصولات دیگر</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
