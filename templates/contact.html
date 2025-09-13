@@ -1,7 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>تماس با ما</h1>
-<p>📍 آدرس: تهران، خیابان مثال</p>
-<p>📞 تلفن: 021-12345678</p>
-<p>✉️ ایمیل: info@example.com</p>
+<h1 class="text-2xl font-bold mb-6">تماس با ما</h1>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="bg-green-100 text-green-800 p-3 rounded mb-4">{{ messages[0] }}</div>
+  {% endif %}
+{% endwith %}
+
+<form method="POST" class="space-y-4 max-w-md">
+  <input type="text" name="name" placeholder="نام" required class="w-full border rounded p-2">
+  <input type="email" name="email" placeholder="ایمیل" required class="w-full border rounded p-2">
+  <textarea name="message" placeholder="پیام شما" required class="w-full border rounded p-2"></textarea>
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">ارسال</button>
+</form>
+
+<div class="mt-6">
+  <p>📍 {{ meta.address }}</p>
+  <p>📞 {{ meta.phone }}</p>
+  <p>✉️ {{ meta.email }}</p>
+</div>
 {% endblock %}
